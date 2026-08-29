@@ -1,0 +1,32 @@
+[
+    {
+        "username": "admin",
+        "password": "$2y$10$kw3MmNcSHEtCb3NClt17VOFQx8a9ZWAFrq80ROQzyiH9U9iArKleW",
+        "timestamp": 1788006810
+    },
+    {
+        "username": "course.admin",
+        "password": "$2y$10$cQQfxptIB68lXzf.m5Wsd.Foc9k6wV8UNLypyYt9kQRiJeWWl\/mjK",
+        "timestamp": 1788006840
+    },
+    {
+        "username": "teacher02",
+        "password": "$2y$10$m5VwbLy\/w4rsggLo.kRlt.mmCPGVs8qVmRPXwRydMJ6jA9HF\/R3sy",
+        "timestamp": 1788008864
+    },
+    {
+        "username": "admin",
+        "password": "$2y$10$jrLhg8G5Sgad5x8ettW9ZezgiGEQgbz9RiqO1bkCHXISGx0n5HZaG",
+        "timestamp": 1788008931
+    },
+    {
+        "username": "teacher02",
+        "password": "$2y$10$1Q1XpFrKO.AI91kauzv\/IeAuRGxEpXBZ\/MIcTsRLOC8CRGyZbWnvW",
+        "timestamp": 1788010024
+    },
+    {
+        "username": "adiba",
+        "password": "$2y$10$XDruBNce9VArtJUzVt7GJuRH6z.GrD9RurluJeUmHKJ9Xvtudmh4W",
+        "timestamp": 1788010093
+    }
+]
