@@ -151,14 +151,14 @@ button:hover {
 
     <div class="box">
 
-        <h2>Upload Course Excel File</h2>
+        <h2>Upload Course</h2>
 
         <p class="subtitle">
-            In Excel, choose Save As and select CSV UTF-8 before uploading.
+            Supported file formats: .txt, .csv.
         </p>
 
         <p class="format">
-            First row headings and column order:<br>
+            Text Format:<br>
             course_id, course_name, course_code, credit, day, start_time, end_time
         </p>
 
@@ -167,7 +167,7 @@ button:hover {
 
         <form method="post" action="" enctype="multipart/form-data">
 
-            <label>Select Excel File</label>
+            <label>Select File</label>
 
             <input
                 type="file"

@@ -3,160 +3,210 @@ include "../Controller/StudentMarksValidation.php";
 ?>
 
 <!DOCTYPE html>
-<html lang="en">
+<html>
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Marks - Student</title>
-<style>
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-    font-family: Arial, sans-serif;
-}
 
-body {
-    background: #f7f0df;
-    color: #000000;
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-}
+    <title>Marks - Student</title>
 
-.header {
-    background: #741f2b;
-    color: white;
-    padding: 20px 40px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
+    <style>
 
-.header h1 { font-size: 24px; }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
 
-.back {
-    background: #fffdf7;
-    color: #741f2b;
-    height: 37px;
-    padding: 0 15px;
-    border-radius: 5px;
-    text-decoration: none;
-    font-weight: 500;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
+        html, body {
+            height: 100%;
+        }
 
-.back:hover { background: #f3e8d2; }
+        body {
+            background: #f7f0df;
+            color: #000000;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
 
-.container {
-    flex: 1;
-    padding: 40px;
-}
+        .header {
+            background: #741f2b;
+            color: white;
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
 
-.page-title { margin-bottom: 25px; }
-.page-title h2 { margin-bottom: 8px; }
-.page-title p { color: #333333; }
+        .header h1 {
+            font-size: 24px;
+        }
 
-.mark-line {
-    padding: 18px 0;
-    border-top: 1px solid #d8cdb8;
-}
+        .back {
+            background: #fffdf7;
+            color: #741f2b;
+            height: 37px;
+            padding: 0 15px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
 
-.mark-line:last-of-type { border-bottom: 1px solid #d8cdb8; }
-.mark-line h3 { color: #741f2b; margin-bottom: 12px; }
-.mark-info { margin-bottom: 7px; font-size: 14px; }
-.mark-info:last-child { margin-bottom: 0; }
-.label { font-weight: bold; }
-.grade { color: #741f2b; font-weight: bold; }
+        .back:hover {
+            background: #f3e8d2;
+        }
 
-.empty {
-    background: #fffdf7;
-    padding: 30px;
-    border-radius: 10px;
-    border: 1px solid #eadfc9;
-    color: #555555;
-}
+        .container {
+            width: 750px;
+            margin: 40px auto;
+            background: #fffdf7;
+            border: 1px solid #eadfc9;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(75, 20, 20, 0.12);
+            padding: 40px;
+        }
 
-.footer {
-    background: #741f2b;
-    color: #fffdf7;
-    text-align: center;
-    padding: 15px 20px;
-    font-size: 14px;
-    margin-top: auto;
-}
+        .page-title {
+            margin-bottom: 25px;
+        }
 
-@media (max-width: 700px) {
-    .header { padding: 20px; }
-    .container { padding: 25px; }
-}
-</style>
+        .page-title h2 {
+            margin-bottom: 8px;
+            color: #741f2b;
+            font-size: 22px;
+        }
+
+        .page-title p {
+            color: #333333;
+            font-size: 14px;
+        }
+
+        .text-list {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .item-block {
+            padding-bottom: 14px;
+            border-bottom: 1px solid #eadfc9;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .item-block:last-child {
+            border-bottom: none;
+        }
+
+        .item-block strong {
+            color: #741f2b;
+        }
+
+        .grade-highlight {
+            color: #741f2b;
+            font-weight: bold;
+        }
+
+        .empty-msg {
+            color: #555555;
+            padding: 10px 0;
+            font-size: 14px;
+        }
+
+        .footer {
+            background: #741f2b;
+            color: #fffdf7;
+            text-align: center;
+            padding: 15px 20px;
+            font-size: 14px;
+            margin-top: auto;
+            width: 100%;
+        }
+
+    </style>
+
 </head>
+
 <body>
 
-<div class="header">
-    <h1>Marks</h1>
-    <a href="student.php" class="back">Back to Dashboard</a>
-</div>
+    <div class="header">
 
-<div class="container">
-    <div class="page-title">
-        <h2>My Marks</h2>
-        <p>These are the marks published for your enrolled courses.</p>
+        <h1>Marks</h1>
+
+        <a href="student.php" class="back">Back to Dashboard</a>
+
     </div>
 
-    <?php if (!empty($student_marks)): ?>
-        <?php foreach ($student_marks as $course_mark): ?>
-            <?php $has_mark = $course_mark["marks"] !== null; ?>
+    <div class="container">
 
-            <div class="mark-line">
-                <h3>
-                    <?php echo htmlspecialchars($course_mark["course_code"] . " - " . $course_mark["course_name"]); ?>
-                </h3>
+        <div class="page-title">
 
-                <div class="mark-info">
-                    <span class="label">Course ID:</span>
-                    <?php echo htmlspecialchars($course_mark["course_id"]); ?>
-                </div>
+            <h2>My Marks</h2>
 
-                <div class="mark-info">
-                    <span class="label">Course Name:</span>
-                    <?php echo htmlspecialchars($course_mark["course_name"]); ?>
-                </div>
+            <p>View your marks for the courses you are enrolled in.</p>
 
-                <div class="mark-info">
-                    <span class="label">Course Code:</span>
-                    <?php echo htmlspecialchars($course_mark["course_code"]); ?>
-                </div>
+        </div>
 
-                <div class="mark-info">
-                    <span class="label">Credit:</span>
-                    <?php echo htmlspecialchars($course_mark["credit"]); ?>
-                </div>
+        <div class="text-list">
 
-                <div class="mark-info">
-                    <span class="label">Marks:</span>
-                    <?php echo $has_mark ? htmlspecialchars($course_mark["marks"]) : "Not Published"; ?>
-                </div>
+            <?php
 
-                <div class="mark-info">
-                    <span class="label">Grade:</span>
-                    <span class="grade">
-                        <?php echo $has_mark ? htmlspecialchars($course_mark["grade"]) : "—"; ?>
-                    </span>
-                </div>
-            </div>
-        <?php endforeach; ?>
-    <?php else: ?>
-        <div class="empty">No courses are currently included in your enrollment.</div>
-    <?php endif; ?>
-</div>
+            if (!empty($marks_records)) {
 
-<div class="footer">
-    <p>&copy; <?php echo date("Y"); ?> University Portal. All Rights Reserved.</p>
-</div>
+                foreach ($marks_records as $row)
+                {
+                    echo "<div class='item-block'>";
+
+                    echo "<p>";
+                    echo "<strong>Course:</strong> ";
+                    echo htmlspecialchars($row['course_code'] . " - " . $row['course_name']);
+                    echo " (ID: " . htmlspecialchars($row['course_id']) . ")";
+                    echo "</p>";
+
+                    echo "<p>";
+                    echo "<strong>Credits:</strong> ";
+                    echo htmlspecialchars($row['credit']);
+                    echo " | ";
+
+                    echo "<strong>Marks:</strong> ";
+                    echo ($row['marks'] !== null) ? htmlspecialchars($row['marks']) : "N/A";
+                    echo " | ";
+
+                    echo "<strong>Grade:</strong> ";
+                    echo "<span class='grade-highlight'>";
+                    echo ($row['grade'] !== null) ? htmlspecialchars($row['grade']) : "N/A";
+                    echo "</span>";
+
+                    echo "</p>";
+
+                    echo "</div>";
+                }
+
+            } else
+            {
+                echo "<p class='empty-msg'>";
+                echo "No enrolled courses or marks available.";
+                echo "</p>";
+            }
+
+            ?>
+
+        </div>
+
+    </div>
+
+    <div class="footer">
+
+        <p>
+            &copy; <?php echo date("Y"); ?> University Portal. All Rights Reserved.
+        </p>
+
+    </div>
 
 </body>
+
 </html>

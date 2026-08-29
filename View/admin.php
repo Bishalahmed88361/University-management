@@ -41,7 +41,7 @@ body {
     gap: 10px;
 }
 
-.notification, .logout {
+.logout {
     width: 110px;
     height: 37px;
     background: #fffdf7;
@@ -56,7 +56,7 @@ body {
     justify-content: center;
 }
 
-.notification:hover, .logout:hover {
+.logout:hover {
     background: #f3e8d2;
 }
 
@@ -138,9 +138,6 @@ body {
 <div class="header">
     <h1>Main Admin Dashboard</h1>
     <div class="header-right">
-        <div class="notification" onclick="notifications()">
-            Notifications
-        </div>
         <a href="login.php" class="logout">
             Logout
         </a>
@@ -172,12 +169,6 @@ body {
 <div class="footer">
     <p>&copy; <?php echo date("Y"); ?> University Portal. All Rights Reserved.</p>
 </div>
-
-<script>
-function notifications() {
-
-}
-</script>
 
 </body>
 </html>

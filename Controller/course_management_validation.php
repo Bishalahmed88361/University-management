@@ -1,5 +1,5 @@
 <?php
-include_once "../Model/db.php";
+include "../Model/db.php";
 
 $upload_message = "";
 $upload_error = "";
@@ -55,7 +55,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_FILES["course_file"]))
             }
         }
 
-        $connection->close();
         $upload_message = $added . " courses uploaded successfully";
     }
     else

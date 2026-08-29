@@ -1,19 +1,10 @@
 <?php
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
+session_start();
+include "../Model/db.php";
 
-include_once "../Model/db.php";
-
-if (
-    !isset($_SESSION["logged_in"]) ||
-    $_SESSION["logged_in"] !== true ||
-    !isset($_SESSION["role"]) ||
-    $_SESSION["role"] !== "student" ||
-    !isset($_SESSION["username"])
-) {
+if (!isset($_SESSION["logged_in"]) || $_SESSION["logged_in"] != true || !isset($_SESSION["role"]) || $_SESSION["role"] != "student" || !isset($_SESSION["username"])) {
     header("Location: login.php");
-    exit;
+    exit();
 }
 
 $student_username = $_SESSION["username"];
@@ -29,28 +20,19 @@ $error = "";
 $db = new db();
 $connection = $db->connection();
 
-if ($selected_course === "") {
+if ($selected_course == "") {
     $error = "Please select a course.";
 } else {
-    $course = $db->getStudentCourseDetails(
-        $connection,
-        $student_username,
-        $selected_course
-    );
+    $course = $db->getStudentCourseDetails($connection, $student_username, $selected_course);
 
-    if ($course === null) {
+    if ($course == null) {
         $error = "This course is not included in your enrollment.";
     } else {
-        $attendance_records = $db->getStudentAttendanceRecords(
-            $connection,
-            $student_username,
-            $selected_course
-        );
-
+        $attendance_records = $db->getStudentAttendanceRecords($connection, $student_username, $selected_course);
         $total_classes = count($attendance_records);
 
         foreach ($attendance_records as $record) {
-            if ($record["status"] === "present") {
+            if ($record["status"] == "present") {
                 $classes_present++;
             }
         }

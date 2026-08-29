@@ -1,18 +1,10 @@
 <?php
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
+session_start();
+include "../Model/db.php";
 
-include_once "../Model/db.php";
-
-if (
-    !isset($_SESSION["logged_in"]) ||
-    $_SESSION["logged_in"] !== true ||
-    !isset($_SESSION["role"]) ||
-    $_SESSION["role"] !== "teacher"
-) {
+if (!isset($_SESSION["logged_in"]) || $_SESSION["logged_in"] != true || !isset($_SESSION["role"]) || $_SESSION["role"] != "teacher" || !isset($_SESSION["username"])) {
     header("Location: login.php");
-    exit;
+    exit();
 }
 
 $teacher_username = $_SESSION["username"];
@@ -30,7 +22,7 @@ $error = "";
 if (isset($_GET["course_id"])) {
     $selected_course = trim($_GET["course_id"]);
 
-    if ($selected_course !== "") {
+    if ($selected_course != "") {
         if ($db->isTeacherAssignedToCourse($connection, $teacher_username, $selected_course)) {
             $students = $db->getCourseStudents($connection, $selected_course);
             $marks = $db->getMarks($connection, $selected_course);
@@ -41,22 +33,36 @@ if (isset($_GET["course_id"])) {
     }
 }
 
-if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    $selected_course = isset($_POST["course_id"]) ? trim($_POST["course_id"]) : "";
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $selected_course = trim($_POST["course_id"] ?? "");
 
-    if ($selected_course === "") {
+    if ($selected_course == "") {
         $error = "Please select a course.";
     } elseif (!$db->isTeacherAssignedToCourse($connection, $teacher_username, $selected_course)) {
         $error = "You are not assigned to this course.";
     } elseif (isset($_POST["marks"]) && is_array($_POST["marks"])) {
+        $students = $db->getCourseStudents($connection, $selected_course);
+
         foreach ($_POST["marks"] as $student_username => $mark) {
             $mark = trim($mark);
 
-            if ($mark === "") {
+            if ($mark == "") {
                 continue;
             }
 
-            if (!is_numeric($mark)) {
+            $student_allowed = false;
+
+            foreach ($students as $student) {
+                if ($student["username"] == $student_username) {
+                    $student_allowed = true;
+                    break;
+                }
+            }
+
+            if (!$student_allowed) {
+                $error = "Invalid student for this course.";
+                break;
+            } elseif (!is_numeric($mark)) {
                 $error = "Marks must be numeric.";
                 break;
             }
@@ -90,21 +96,22 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 $grade = "F";
             }
 
-            $db->saveMark(
-                $connection,
-                $selected_course,
-                $student_username,
-                $mark,
-                $grade
-            );
+            $saved = $db->saveMark($connection, $selected_course, $student_username, $mark, $grade);
+
+            if (!$saved) {
+                $error = "Unable to save marks.";
+                break;
+            }
         }
 
-        if ($error === "") {
+        if ($error == "") {
             $message = "Marks saved successfully.";
         }
 
         $students = $db->getCourseStudents($connection, $selected_course);
         $marks = $db->getMarks($connection, $selected_course);
+    } else {
+        $error = "Marks data is missing.";
     }
 }
 ?>

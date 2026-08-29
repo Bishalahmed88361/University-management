@@ -30,7 +30,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $_SESSION["username"] = $row['username'];
                 $_SESSION["role"] = $row['role'];
 
-                // Append user activity to user.json as per faculty format
                 $jsonfile = "../Model/user.json";
                 $users = [];
                 if (file_exists($jsonfile)) {
@@ -44,7 +43,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 ];
                 file_put_contents($jsonfile, json_encode($users, JSON_PRETTY_PRINT));
 
-                // Redirect based on role
                 if ($role === "admin") {
                     Header("Location:../View/admin.php");
                 } else if ($role === "course_admin") {

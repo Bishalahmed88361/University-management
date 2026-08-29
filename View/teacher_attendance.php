@@ -1,274 +1,476 @@
 <?php
+
 include "../Controller/TeacherAttendanceValidation.php";
+
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Attendance - Teacher</title>
-<style>
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-    font-family: Arial, sans-serif;
-}
 
-body {
-    background: #f7f0df;
-    color: #000000;
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-}
+    <meta charset="UTF-8">
 
-.header {
-    background: #741f2b;
-    color: white;
-    padding: 20px 40px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-.header h1 { font-size: 24px; }
+    <title>Attendance - Teacher</title>
 
-.back {
-    background: #fffdf7;
-    color: #741f2b;
-    height: 37px;
-    padding: 0 15px;
-    border-radius: 5px;
-    text-decoration: none;
-    font-weight: 500;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
 
-.back:hover { background: #f3e8d2; }
+        body {
+            background: #f7f0df;
+            color: #000000;
+        }
 
-.container {
-    flex: 1;
-    padding: 40px;
-}
+        .header {
+            background: #741f2b;
+            color: white;
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
 
-.page-title { margin-bottom: 25px; }
-.page-title h2 { margin-bottom: 8px; }
-.page-title p { color: #333333; }
+        .header h1 {
+            font-size: 24px;
+        }
 
-.controls {
-    background: #fffdf7;
-    padding: 25px;
-    border-radius: 10px;
-    border: 1px solid #eadfc9;
-    box-shadow: 0 3px 10px rgba(75, 20, 20, 0.12);
-    margin-bottom: 25px;
-}
+        .back {
+            background: #fffdf7;
+            color: #741f2b;
+            height: 37px;
+            padding: 0 15px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
 
-.control-group { margin-bottom: 15px; }
-.control-group:last-child { margin-bottom: 0; }
+        .back:hover {
+            background: #f3e8d2;
+        }
 
-.control-group label {
-    display: block;
-    margin-bottom: 8px;
-    font-size: 14px;
-    font-weight: bold;
-}
+        .container {
+            padding: 40px;
+        }
 
-.control-group select,
-.control-group input {
-    width: 300px;
-    padding: 11px;
-    border: 1px solid #d8cdb8;
-    border-radius: 6px;
-    background: white;
-}
+        .page-title {
+            margin-bottom: 25px;
+        }
 
-.message,
-.error-message {
-    padding: 12px;
-    border-radius: 6px;
-    margin-bottom: 20px;
-}
+        .page-title h2 {
+            margin-bottom: 8px;
+        }
 
-.message {
-    background: #d4edda;
-    color: #155724;
-    border: 1px solid #c3e6cb;
-}
+        .page-title p {
+            color: #333333;
+        }
 
-.error-message {
-    background: #f8d7da;
-    color: #a00000;
-    border: 1px solid #f5c6cb;
-}
+        .controls {
+            background: #fffdf7;
+            padding: 25px;
+            border-radius: 10px;
+            border: 1px solid #eadfc9;
+            box-shadow: 0 3px 10px rgba(75, 20, 20, 0.12);
+            margin-bottom: 25px;
+        }
 
-.student-line {
-    padding: 15px 0;
-    border-top: 1px solid #d8cdb8;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
+        .control-group {
+            margin-bottom: 15px;
+        }
 
-.student-line:last-of-type { border-bottom: 1px solid #d8cdb8; }
-.student-info h3 { color: #741f2b; margin-bottom: 6px; }
-.student-info p { font-size: 14px; }
+        .control-group:last-child {
+            margin-bottom: 0;
+        }
 
-.attendance-options {
-    display: flex;
-    gap: 20px;
-    align-items: center;
-}
+        .control-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            font-weight: bold;
+        }
 
-.attendance-options label { font-size: 14px; cursor: pointer; }
+        .control-group select,
+        .control-group input {
+            width: 300px;
+            padding: 11px;
+            border: 1px solid #d8cdb8;
+            border-radius: 6px;
+            background: white;
+        }
 
-.save-btn {
-    margin-top: 20px;
-    background: #741f2b;
-    color: white;
-    border: none;
-    padding: 12px 25px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 14px;
-}
+        .message {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+        }
 
-.save-btn:hover { background: #5c1721; }
+        .student-line {
+            padding: 15px 0;
+            border-bottom: 1px solid #d8cdb8;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
 
-.empty {
-    background: #fffdf7;
-    padding: 30px;
-    border-radius: 10px;
-    border: 1px solid #eadfc9;
-    color: #555555;
-}
+        .student-line:first-child {
+            border-top: 1px solid #d8cdb8;
+        }
 
-.footer {
-    background: #741f2b;
-    color: #fffdf7;
-    text-align: center;
-    padding: 15px 20px;
-    font-size: 14px;
-    margin-top: auto;
-}
+        .student-info h3 {
+            color: #741f2b;
+            margin-bottom: 6px;
+        }
 
-@media (max-width: 700px) {
-    .header { padding: 20px; }
-    .container { padding: 25px; }
+        .student-info p {
+            font-size: 14px;
+        }
 
-    .control-group select,
-    .control-group input { width: 100%; }
+        .attendance-options {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
 
-    .student-line {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 15px;
-    }
-}
-</style>
+        .attendance-options label {
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .save-btn {
+            margin-top: 20px;
+            background: #741f2b;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .save-btn:hover {
+            background: #5c1721;
+        }
+
+        .empty {
+            background: #fffdf7;
+            padding: 30px;
+            border-radius: 10px;
+            border: 1px solid #eadfc9;
+            color: #555555;
+        }
+
+        @media (max-width: 700px) {
+
+            .container {
+                padding: 25px;
+            }
+
+            .control-group select,
+            .control-group input {
+                width: 100%;
+            }
+
+            .student-line {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+
+        }
+    </style>
+
 </head>
+
 <body>
 
-<div class="header">
-    <h1>Attendance</h1>
-    <a href="teacher.php" class="back">Back to Dashboard</a>
-</div>
+    <div class="header">
 
-<div class="container">
-    <div class="page-title">
-        <h2>Student Attendance</h2>
-        <p>Record attendance for students enrolled in your courses.</p>
+        <h1>
+            Attendance
+        </h1>
+
+        <a href="teacher.php" class="back">
+            Back to Dashboard
+        </a>
+
     </div>
 
-    <?php if (!empty($message)): ?>
-        <div class="message"><?php echo htmlspecialchars($message); ?></div>
-    <?php endif; ?>
 
-    <?php if (!empty($error)): ?>
-        <div class="error-message"><?php echo htmlspecialchars($error); ?></div>
-    <?php endif; ?>
+    <div class="container">
 
-    <div class="controls">
-        <form method="GET" action="">
-            <div class="control-group">
-                <label>Select Course</label>
-                <select name="course_id" onchange="this.form.submit()" required>
-                    <option value="">Select Course</option>
+        <div class="page-title">
 
-                    <?php foreach ($teacher_courses as $course): ?>
-                        <option value="<?php echo htmlspecialchars($course["course_id"]); ?>"
-                            <?php echo $selected_course === $course["course_id"] ? "selected" : ""; ?>>
-                            <?php echo htmlspecialchars($course["course_code"] . " - " . $course["course_name"]); ?>
-                        </option>
-                    <?php endforeach; ?>
-                </select>
-            </div>
-        </form>
+            <h2>
+                Student Attendance
+            </h2>
 
-        <?php if ($selected_course !== ""): ?>
-            <form method="GET" action="">
-                <input type="hidden" name="course_id" value="<?php echo htmlspecialchars($selected_course); ?>">
+            <p>
+                Record attendance for students enrolled in your courses.
+            </p>
 
-                <div class="control-group">
-                    <label>Select Date</label>
-                    <input type="date" name="date" value="<?php echo htmlspecialchars($selected_date); ?>"
-                        onchange="this.form.submit()" required>
-                </div>
-            </form>
-        <?php endif; ?>
-    </div>
+        </div>
 
-    <?php if ($selected_course !== "" && !empty($students)): ?>
-        <form method="POST" action="">
-            <input type="hidden" name="course_id" value="<?php echo htmlspecialchars($selected_course); ?>">
-            <input type="hidden" name="date" value="<?php echo htmlspecialchars($selected_date); ?>">
 
-            <?php foreach ($students as $student): ?>
+        <?php if (!empty($message)): ?>
+
+            <div class="message">
+
                 <?php
-                $student_username = $student["username"];
-                $current_status = "absent";
-
-                if (isset($attendance[$student_username])) {
-                    $current_status = $attendance[$student_username]["status"];
-                }
+                echo htmlspecialchars($message);
                 ?>
 
-                <div class="student-line">
-                    <div class="student-info">
-                        <h3><?php echo htmlspecialchars($student["name"]); ?></h3>
-                        <p>Student ID: <?php echo htmlspecialchars($student_username); ?></p>
-                    </div>
+            </div>
 
-                    <div class="attendance-options">
-                        <label>
-                            <input type="radio" name="attendance[<?php echo htmlspecialchars($student_username); ?>]"
-                                value="present" <?php echo $current_status === "present" ? "checked" : ""; ?> required>
-                            Present
-                        </label>
+        <?php endif; ?>
 
-                        <label>
-                            <input type="radio" name="attendance[<?php echo htmlspecialchars($student_username); ?>]"
-                                value="absent" <?php echo $current_status === "absent" ? "checked" : ""; ?>>
-                            Absent
-                        </label>
-                    </div>
+
+        <?php if (!empty($error)): ?>
+
+            <div class="message">
+
+                <?php
+                echo htmlspecialchars($error);
+                ?>
+
+            </div>
+
+        <?php endif; ?>
+
+
+        <div class="controls">
+
+            <form method="GET">
+
+                <div class="control-group">
+
+                    <label>
+                        Select Course
+                    </label>
+
+                    <select name="course_id" onchange="this.form.submit()" required>
+
+                        <option value="">
+                            Select Course
+                        </option>
+
+                        <?php foreach ($teacher_courses as $course): ?>
+
+                            <option value="<?php
+                            echo htmlspecialchars(
+                                $course["course_id"]
+                            );
+                            ?>" <?php
+                            if (
+                                $selected_course ===
+                                $course["course_id"]
+                            ) {
+                                echo "selected";
+                            }
+                            ?>>
+
+                                <?php
+                                echo htmlspecialchars(
+                                    $course["course_code"]
+                                    . " - "
+                                    . $course["course_name"]
+                                );
+                                ?>
+
+                            </option>
+
+                        <?php endforeach; ?>
+
+                    </select>
+
                 </div>
-            <?php endforeach; ?>
 
-            <button type="submit" class="save-btn">Save Attendance</button>
-        </form>
-    <?php elseif ($selected_course !== ""): ?>
-        <div class="empty">No students are enrolled in this course.</div>
-    <?php endif; ?>
-</div>
+            </form>
 
-<div class="footer">
-    <p>&copy; <?php echo date("Y"); ?> University Portal. All Rights Reserved.</p>
-</div>
+
+            <?php if (!empty($selected_course)): ?>
+
+                <form method="GET">
+
+                    <input type="hidden" name="course_id" value="<?php
+                    echo htmlspecialchars(
+                        $selected_course
+                    );
+                    ?>">
+
+                    <div class="control-group">
+
+                        <label>
+                            Select Date
+                        </label>
+
+                        <input type="date" name="date" value="<?php
+                        echo htmlspecialchars(
+                            $selected_date
+                        );
+                        ?>" onchange="this.form.submit()" required>
+
+                    </div>
+
+                </form>
+
+            <?php endif; ?>
+
+        </div>
+
+
+        <?php if (
+            $selected_course !== "" &&
+            !empty($students)
+        ): ?>
+
+            <form method="POST">
+
+                <input type="hidden" name="course_id" value="<?php
+                echo htmlspecialchars(
+                    $selected_course
+                );
+                ?>">
+
+                <input type="hidden" name="date" value="<?php
+                echo htmlspecialchars(
+                    $selected_date
+                );
+                ?>">
+
+
+                <?php foreach ($students as $student): ?>
+
+                    <?php
+
+                    $student_username =
+                        $student["username"];
+
+                    $current_status = "absent";
+
+                    if (
+                        isset(
+                        $attendance[
+                            $student_username
+                        ]
+                    )
+                    ) {
+                        $current_status =
+                            $attendance[
+                                $student_username
+                            ]["status"];
+                    }
+
+                    ?>
+
+
+                    <div class="student-line">
+
+                        <div class="student-info">
+
+                            <h3>
+
+                                <?php
+                                echo htmlspecialchars(
+                                    $student["name"]
+                                );
+                                ?>
+
+                            </h3>
+
+                            <p>
+
+                                Student ID:
+
+                                <?php
+                                echo htmlspecialchars(
+                                    $student_username
+                                );
+                                ?>
+
+                            </p>
+
+                        </div>
+
+
+                        <div class="attendance-options">
+
+                            <label>
+
+                                <input type="radio" name="attendance[<?php
+                                echo htmlspecialchars(
+                                    $student_username
+                                );
+                                ?>]" value="present" <?php
+                                if (
+                                    $current_status ===
+                                    "present"
+                                ) {
+                                    echo "checked";
+                                }
+                                ?>
+                                    required>
+
+                                Present
+
+                            </label>
+
+
+                            <label>
+
+                                <input type="radio" name="attendance[<?php
+                                echo htmlspecialchars(
+                                    $student_username
+                                );
+                                ?>]" value="absent" <?php
+                                if (
+                                    $current_status ===
+                                    "absent"
+                                ) {
+                                    echo "checked";
+                                }
+                                ?>>
+
+                                Absent
+
+                            </label>
+
+                        </div>
+
+                    </div>
+
+                <?php endforeach; ?>
+
+
+                <button type="submit" class="save-btn">
+                    Save Attendance
+                </button>
+
+            </form>
+
+
+        <?php elseif ($selected_course !== ""): ?>
+
+            <div class="empty">
+                No students are enrolled in this course.
+            </div>
+
+        <?php endif; ?>
+
+
+    </div>
 
 </body>
+
 </html>

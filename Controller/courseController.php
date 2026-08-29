@@ -1,60 +1,42 @@
 <?php
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
+session_start();
+include "../Model/db.php";
 
-include_once "../Model/db.php";
+if (isset($_GET["action"]) && $_GET["action"] == "check_unique") {
+    header("Content-Type: application/json");
 
-if (isset($_GET['action']) && $_GET['action'] === 'check_unique') {
-    ob_clean();
-    header('Content-Type: application/json');
+    $database = new db();
+    $connection = $database->connection();
 
-    $db = new db();
-    $conn = $db->connection();
+    $field = $_GET["field"] ?? "";
+    $value = trim($_GET["value"] ?? "");
+    $response = ["isUnique" => true];
 
-    $field = $_GET['field'] ?? '';
-    $value = trim($_GET['value'] ?? '');
+    if ($field == "course_id" && !empty($value)) {
+        $courses = $database->getCourses($connection);
 
-    $response = ['isUnique' => true];
-
-    if ($field === 'course_id' && !empty($value)) {
-        $stmt = $conn->prepare("SELECT course_id FROM courses WHERE course_id = ?");
-        $stmt->bind_param("s", $value);
-        $stmt->execute();
-        $res = $stmt->get_result();
-        if ($res->num_rows > 0) {
-            $response['isUnique'] = false;
+        if ($courses) {
+            while ($course = mysqli_fetch_assoc($courses)) {
+                if ($course["course_id"] == $value) {
+                    $response["isUnique"] = false;
+                    break;
+                }
+            }
         }
-        $stmt->close();
-    } elseif ($field === 'course_code' && !empty($value)) {
-        $stmt = $conn->prepare("SELECT course_code FROM courses WHERE course_code = ?");
-        $stmt->bind_param("s", $value);
-        $stmt->execute();
-        $res = $stmt->get_result();
-        if ($res->num_rows > 0) {
-            $response['isUnique'] = false;
-        }
-        $stmt->close();
     }
 
     echo json_encode($response);
-    exit;
+    exit();
 }
 
-class CourseController {
-    private $db;
-    private $connection;
-
-    public function __construct() {
-        $this->db = new db();
-        $this->connection = $this->db->connection();
-    }
-
-    public function handleCourseCreation() {
+class CourseController
+{
+    function handleCourseCreation()
+    {
         $message = "";
         $message_type = "";
 
-        if ($_SERVER["REQUEST_METHOD"] === "POST") {
+        if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $course_id = trim($_POST["course_id"] ?? "");
             $course_name = trim($_POST["course_name"] ?? "");
             $course_code = trim($_POST["course_code"] ?? "");
@@ -66,46 +48,64 @@ class CourseController {
             if (empty($course_id) || empty($course_name) || empty($course_code) || empty($credit) || empty($day) || empty($start_time) || empty($end_time)) {
                 $message = "Please fill all fields.";
                 $message_type = "error";
-            } elseif (!is_numeric($credit) || (int)$credit < 1 || (int)$credit > 6) {
+            } elseif (!is_numeric($credit) || $credit < 1 || $credit > 6) {
                 $message = "Course credit must be between 1 and 6.";
                 $message_type = "error";
             } else {
-                $created = $this->db->createCourse($this->connection, $course_id, $course_name, $course_code, (int)$credit, $day, $start_time, $end_time);
+                $database = new db();
+                $connection = $database->connection();
+
+                $created = $database->createCourse(
+                    $connection,
+                    $course_id,
+                    $course_name,
+                    $course_code,
+                    $credit,
+                    $day,
+                    $start_time,
+                    $end_time
+                );
+
                 if ($created) {
                     $message = "Course created successfully!";
                     $message_type = "success";
                 } else {
-                    $message = "Failed to create course. Course ID or Code may already exist.";
+                    $message = "Failed to create course. Course ID may already exist.";
                     $message_type = "error";
                 }
             }
         }
 
         return [
-            'message' => $message,
-            'message_type' => $message_type
+            "message" => $message,
+            "message_type" => $message_type
         ];
     }
 
-    // Displays unique enrolled student counts and valid active faculty
-    public function fetchAllCoursesWithDetails() {
-        $query = "SELECT c.*, 
-                         COALESCE(u_fac.name, fa.faculty_username, 'Not Assigned') AS teacher_name, 
-                         COUNT(DISTINCT se.student_username) AS enrolled_students
-                  FROM courses c
-                  LEFT JOIN faculty_assignments fa ON c.course_id = fa.course_id
-                  LEFT JOIN users u_fac ON fa.faculty_username = u_fac.username AND u_fac.status = 'approved'
-                  LEFT JOIN student_enrollments se ON c.course_id = se.course_id
-                  LEFT JOIN users u_stu ON se.student_username = u_stu.username AND u_stu.status = 'approved'
-                  GROUP BY c.course_id";
+    function fetchAllCoursesWithDetails()
+    {
+        $database = new db();
+        $connection = $database->connection();
 
-        $res = mysqli_query($this->connection, $query);
+        $sql = "SELECT courses.*,
+                       users.name AS teacher_name,
+                       COUNT(student_enrollments.student_username) AS enrolled_students
+                FROM courses
+                LEFT JOIN faculty_assignments
+                ON courses.course_id = faculty_assignments.course_id
+                LEFT JOIN users
+                ON faculty_assignments.faculty_username = users.username
+                LEFT JOIN student_enrollments
+                ON courses.course_id = student_enrollments.course_id
+                GROUP BY courses.course_id";
 
-        if (!$res) {
-            return $this->db->getCourses($this->connection);
+        $result = mysqli_query($connection, $sql);
+
+        if ($result == false) {
+            return $database->getCourses($connection);
         }
 
-        return $res;
+        return $result;
     }
 }
 ?>
